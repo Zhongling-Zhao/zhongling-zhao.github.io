@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zhongling Zhao — Data Scientist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0e;
+    --surface: #141418;
+    --surface-2: #1c1c22;
+    --border: #2a2a33;
+    --text: #e8e6e3;
+    --text-dim: #8a8a95;
+    --accent: #c9a96e;
+    --accent-dim: rgba(201,169,110,0.12);
+    --accent-glow: rgba(201,169,110,0.06);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* ── Noise overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(20px);
+    background: rgba(12,12,14,0.7);
+    border-bottom: 1px solid rgba(42,42,51,0.4);
+    transition: all 0.4s ease;
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .hero-bg-lines span {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    opacity: 0.25;
+    animation: lineFade 6s ease-in-out infinite;
+  }
+
+  .hero-bg-lines span:nth-child(1) { left: 20%; animation-delay: 0s; }
+  .hero-bg-lines span:nth-child(2) { left: 40%; animation-delay: 1.5s; }
+  .hero-bg-lines span:nth-child(3) { left: 60%; animation-delay: 3s; }
+  .hero-bg-lines span:nth-child(4) { left: 80%; animation-delay: 4.5s; }
+
+  @keyframes lineFade {
+    0%, 100% { opacity: 0.08; }
+    50% { opacity: 0.25; }
+  }
+
+  .hero-content { max-width: 900px; position: relative; z-index: 2; }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.3s;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.5s;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.7s;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    background: #d4b578;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,169,110,0.2);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Section commons ── */
+  section {
+    padding: 6rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 400;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── About ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .about-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .detail-card {
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .detail-card:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-3px);
+  }
+
+  .detail-card .label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-card .value {
+    font-size: 0.9rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── Education ── */
+  .edu-item {
+    position: relative;
+    padding: 2rem 0 2rem 3rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .edu-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 2.25rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(201,169,110,0.4);
+  }
+
+  .edu-item:last-child { border-left-color: transparent; }
+
+  .edu-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  .edu-school {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .edu-degree {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+  }
+
+  .edu-courses {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    opacity: 0.7;
+  }
+
+  /* ── Skills ── */
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .skill-tag {
+    padding: 0.5rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-2px);
+  }
+
+  .skill-tag.highlight {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ── Experience ── */
+  .exp-card {
+    padding: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .exp-card:hover {
+    border-color: rgba(201,169,110,0.3);
+    background: linear-gradient(135deg, var(--surface), var(--accent-glow));
+    transform: translateY(-2px);
+  }
+
+  .exp-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .exp-company {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+  }
+
+  .exp-role {
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .exp-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    padding: 0;
+  }
+
+  .exp-bullets li {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .exp-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── Projects ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    padding: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .project-card:hover {
+    border-color: rgba(201,169,110,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  }
+
+  .project-card:hover::before { opacity: 1; }
+
+  .project-date {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-name {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .project-desc {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    flex: 1;
+    margin-bottom: 1.25rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .project-tags span {
+    padding: 0.25rem 0.65rem;
+    background: var(--surface-2);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Contact ── */
+  .contact-section {
+    text-align: center;
+    padding: 8rem 3rem;
+  }
+
+  .contact-section h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    margin-bottom: 1.25rem;
+  }
+
+  .contact-section h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .contact-section p {
+    color: var(--text-dim);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .contact-link svg { width: 18px; height: 18px; }
+
+  /* ── Footer ── */
+  footer {
+    padding: 2rem 3rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Scroll reveal ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.25rem; }
+    .nav-links a { font-size: 0.75rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .contact-section { padding: 5rem 1.5rem; }
+    .hero-cta { flex-direction: column; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 480px) {
+    .nav-links { display: none; }
+    .about-details { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Metrics banner ── */
+  .metrics-section {
+    padding: 4rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .metric-card {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .metric-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(201,169,110,0.08);
+  }
+
+  .metric-value {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* ── Skill categories ── */
+  .skills-category {
+    margin-bottom: 2rem;
+  }
+
+  .skills-category:last-child { margin-bottom: 0; }
+
+  .skills-cat-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    padding-left: 0.25rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <a href="#" class="nav-logo">ZZ.</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#education">Education</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-lines">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="hero-content">
+    <div class="hero-label">Data Scientist · Machine Learning · Analytics</div>
+    <h1>Zhongling Zhao<br><em>Data-Driven</em> Problem Solver</h1>
+    <p class="hero-desc">
+      M.S. in Civil Engineering at UC Berkeley with a strong interest in data analysis, machine learning, and data engineering. I build end-to-end ML pipelines, design analytics dashboards, and turn messy real-world datasets into actionable insights.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects ↓</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">About</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        I'm a Civil Engineering graduate student at UC Berkeley with a strong interest in data analysis and data engineering. I enjoy working across the full data lifecycle — from cleaning and wrangling raw datasets to building models, evaluating results, and communicating insights.
+      </p>
+      <p>
+        Through coursework and hands-on projects, I've gained experience with classification and regression using tree-based models and deep learning, reinforcement learning for optimization, computer vision for satellite imagery, and building interactive dashboards for business analytics.
+      </p>
+      <p>
+        I'm eager to apply these skills in data-driven roles where I can tackle real-world problems — whether that's predicting travel times, assessing disaster damage from satellite images, or uncovering patterns in large-scale mobility datasets.
+      </p>
+    </div>
+    <div class="about-details reveal">
+      <div class="detail-card">
+        <div class="label">Location</div>
+        <div class="value">Berkeley, CA</div>
+      </div>
+      <div class="detail-card">
+        <div class="label">Education</div>
+        <div class="value">UC Berkeley M.S.</div>
+      </div>
+      <div class="detail-card">
+        <div class="label">Focus</div>
+        <div class="value">ML · Analytics · CV</div>
+      </div>
+      <div class="detail-card">
+        <div class="label">Languages</div>
+        <div class="value">Python · SQL · R · C++</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Education -->
+<section id="education">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Education</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="reveal">
+    <div class="edu-item">
+      <div class="edu-date">Aug 2025 — May 2026 (Expected)</div>
+      <div class="edu-school">University of California, Berkeley</div>
+      <div class="edu-degree">M.S. in Civil Engineering</div>
+      <div class="edu-courses">Principles & Techniques of Data Science · Data Mining and Analytics · Person-Specific Data Analysis · Systems Analysis in Transportation · Operation of Transportation Facilities</div>
+    </div>
+    <div class="edu-item">
+      <div class="edu-date">Aug 2024 — May 2025</div>
+      <div class="edu-school">University of California, Berkeley</div>
+      <div class="edu-degree">Exchange Study in Civil Engineering</div>
+      <div class="edu-courses">Data-driven Control Methods for Civil Engineering · Foundations of Data Science · Data Structures · Engineering Data Analysis · The Structure and Interpretation of Computer Programs</div>
+    </div>
+    <div class="edu-item">
+      <div class="edu-date">Sep 2021 — Jun 2025</div>
+      <div class="edu-school">Tongji University</div>
+      <div class="edu-degree">B.Eng. in Transportation Engineering</div>
+      <div class="edu-courses">Probability & Mathematical Statistics · C/C++ Programming · Operations Research · Transportation Data Technology · Outstanding Student Scholarship</div>
+    </div>
+  </div>
+</section>
+
+<!-- Data Highlights -->
+<div class="metrics-section reveal">
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-value">10+</div>
+      <div class="metric-label">ML / Data Projects</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">7</div>
+      <div class="metric-label">Model Types Deployed</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">99%</div>
+      <div class="metric-label">Best Classification Acc.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">30K+</div>
+      <div class="metric-label">Records in Largest Dataset</div>
+    </div>
+  </div>
+</div>
+
+<!-- Skills -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Technical Skills</h2>
+    <span class="section-line"></span>
+  </div>
+
+  <div class="skills-category reveal">
+    <div class="skills-cat-label">Machine Learning & AI</div>
+    <div class="skills-grid">
+      <span class="skill-tag highlight">Scikit-learn</span>
+      <span class="skill-tag highlight">TensorFlow</span>
+      <span class="skill-tag highlight">XGBoost</span>
+      <span class="skill-tag highlight">LightGBM</span>
+      <span class="skill-tag">CNN / MLP</span>
+      <span class="skill-tag">Reinforcement Learning</span>
+      <span class="skill-tag">NLP</span>
+      <span class="skill-tag">Computer Vision</span>
+    </div>
+  </div>
+
+  <div class="skills-category reveal">
+    <div class="skills-cat-label">Data & Analytics</div>
+    <div class="skills-grid">
+      <span class="skill-tag highlight">Python</span>
+      <span class="skill-tag highlight">SQL</span>
+      <span class="skill-tag highlight">Pandas</span>
+      <span class="skill-tag highlight">NumPy</span>
+      <span class="skill-tag">R</span>
+      <span class="skill-tag">Tableau</span>
+      <span class="skill-tag">Seaborn</span>
+      <span class="skill-tag">Matplotlib</span>
+      <span class="skill-tag">EDA</span>
+      <span class="skill-tag">Feature Engineering</span>
+      <span class="skill-tag">Statistical Modeling</span>
+    </div>
+  </div>
+
+  <div class="skills-category reveal">
+    <div class="skills-cat-label">Engineering & Tools</div>
+    <div class="skills-grid">
+      <span class="skill-tag">MySQL</span>
+      <span class="skill-tag">Flask</span>
+      <span class="skill-tag">Git / GitHub</span>
+      <span class="skill-tag">C/C++</span>
+      <span class="skill-tag">Synchro</span>
+      <span class="skill-tag">AutoCAD</span>
+      <span class="skill-tag">Axure</span>
+    </div>
+  </div>
+</section>
+
+<!-- Experience -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Experience</h2>
+    <span class="section-line"></span>
+  </div>
+
+  <div class="exp-card reveal">
+    <div class="exp-top">
+      <div>
+        <div class="exp-company">Tongji Architectural Design (Group) Co., Ltd.</div>
+        <div class="exp-role">Data Analyst & Road Engineering Designer</div>
+      </div>
+      <div class="exp-date">Jul — Aug 2024</div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Modeled and analyzed traffic flow data using Synchro 11 to identify congestion bottlenecks at the South Gate Node in Jiading District</li>
+      <li>Quantified traffic capacity improvements from 25% to 51% through data-driven reconstruction modeling for Stalin Road in Yining</li>
+    </ul>
+  </div>
+
+  <div class="exp-card reveal">
+    <div class="exp-top">
+      <div>
+        <div class="exp-company">Zhejiang Yuntong Data Technology Co., Ltd.</div>
+        <div class="exp-role">Data & Product Analyst — Intelligent Transportation</div>
+      </div>
+      <div class="exp-date">Jan — Feb 2024</div>
+    </div>
+    <ul class="exp-bullets">
+      <li>Analyzed before-and-after traffic efficiency metrics for green wave optimization in Wenzhou using comparative data analysis</li>
+      <li>Engineered a highway geospatial database with 1,000+ data entries scraped from Baidu Maps using Python, ensuring data quality and accuracy</li>
+      <li>Contributed to the design of a transportation GPT model; prototyped data workflows and user interfaces using Axure</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Projects</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-date">Oct — Dec 2025</div>
+      <div class="project-name">Credit Card Default Risk Prediction</div>
+      <div class="project-desc">Built an end-to-end ML pipeline on 30K cardholder records with preprocessing, one-hot encoding, and feature scaling. Benchmarked 7 models (Logistic Regression, KNN, Decision Tree, Random Forest, XGBoost, MLP, CNN) with stratified CV and imbalance-aware metrics — tree-based models achieved 82–83% accuracy.</div>
+      <div class="project-tags">
+        <span>XGBoost</span><span>Random Forest</span><span>MLP</span><span>CNN</span><span>Cross-Validation</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Oct — Dec 2025</div>
+      <div class="project-name">Computer Vision for Disaster Damage Assessment</div>
+      <div class="project-desc">Analyzed 600 satellite images from xView2. Engineered interpretable features (RGB stats, Sobel edges, LBP textures) including block-level features for structural variation. Built logistic regression achieving 99% accuracy on flood/fire classification and a weighted multiclass model (0.55 F1) for hurricane damage severity.</div>
+      <div class="project-tags">
+        <span>Computer Vision</span><span>Feature Engineering</span><span>scikit-learn</span><span>scikit-image</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Jan — May 2025</div>
+      <div class="project-name">Traffic Flow Forecasting & Pricing Optimization</div>
+      <div class="project-desc">Performed clustering and spatio-temporal analysis on NYC taxi data to identify traffic patterns. Engineered features and trained LightGBM (R²=0.81, MAE=25.3 sec/mi). Designed a reinforcement learning controller for dynamic surcharge optimization that outperformed fixed-fee baselines.</div>
+      <div class="project-tags">
+        <span>LightGBM</span><span>Reinforcement Learning</span><span>Clustering</span><span>Feature Engineering</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Oct — Dec 2025</div>
+      <div class="project-name">Customer Engagement Analytics Dashboard</div>
+      <div class="project-desc">Queried relational data with complex SQL to create analysis-ready tables for engagement, retention, and funnel metrics. Built multi-page Tableau dashboards with parameter-driven views, cohort analysis, retention curves, and KPI tracking for stakeholder decision-making.</div>
+      <div class="project-tags">
+        <span>SQL</span><span>Tableau</span><span>Cohort Analysis</span><span>Dashboard Design</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Sep 2024 — May 2025</div>
+      <div class="project-name">Asphalt Recognition System with ML</div>
+      <div class="project-desc">Processed 224 asphalt samples with FTIR spectra through a full preprocessing pipeline (smoothing, normalization, peak detection). Designed a 1D-CNN for brand classification (91.7% accuracy) with weighted loss for class imbalance, plus Random Forest & SVM regressors for performance index prediction. Deployed as a Flask web app with MySQL backend.</div>
+      <div class="project-tags">
+        <span>1D-CNN</span><span>SVM</span><span>Random Forest</span><span>Flask</span><span>MySQL</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Oct — Dec 2025</div>
+      <div class="project-name">Pricing Analysis & Travel Demand Modeling</div>
+      <div class="project-desc">Analyzed household VMT data at census-tract level to assess infrastructure funding. Applied rural–urban classification methods to capture spatial travel behavior differences and evaluated system-level equity outcomes of pricing policies.</div>
+      <div class="project-tags">
+        <span>Spatial Analysis</span><span>Python</span><span>Policy Modeling</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Oct 2024 — May 2025</div>
+      <div class="project-name">Campus Water Network Modeling</div>
+      <div class="project-desc">Transformed GeoJSON data into structured hydraulic modeling datasets. Calibrated models using gradient descent optimization (76% pressure prediction accuracy). Simulated fire-response scenarios with Monte Carlo methods to assess system reliability.</div>
+      <div class="project-tags">
+        <span>Python</span><span>Gradient Descent</span><span>Monte Carlo</span><span>Data Pipelines</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-date">Jan — May 2025</div>
+      <div class="project-name">Multi-Source Mobility Data Analysis</div>
+      <div class="project-desc">Processed and unified four mobility datasets (loop detectors, metro IC-cards, taxi trips, bike-share) through aggregation, normalization, and imputation. Applied kNN/MICE imputation, time-series smoothing, and K-means clustering to analyze travel patterns and station utilization.</div>
+      <div class="project-tags">
+        <span>K-means</span><span>Data Engineering</span><span>Imputation</span><span>Time Series</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="contact-section">
+  <div class="reveal">
+    <h2>Let's <em>Connect</em></h2>
+    <p>I'm always open to discussing data science roles, ML research collaborations, or analytics projects. Let's talk.</p>
+    <div class="contact-links">
+      <a href="mailto:zhonglingzhao221@gmail.com" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        zhonglingzhao221@gmail.com
+      </a>
+      <a href="tel:+15103457384" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +1 (510) 345-7384
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Zhongling Zhao · Built with care in Berkeley
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth nav scroll
+  document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
